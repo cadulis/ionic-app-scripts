@@ -116,8 +116,8 @@ export function writeBundleFilesToDisk(context: BuildContext) {
     return dirname(file.path).indexOf(context.buildDir) >= 0;
   });
   context.bundledFilePaths = bundledFilesToWrite.map(bundledFile => bundledFile.path);
-  const promises = bundledFilesToWrite.map(bundledFileToWrite => mkDirpAsync(dirname(bundledFileToWrite.path)) 
-    && writeFileAsync(bundledFileToWrite.path, bundledFileToWrite.content));
+  const promises = bundledFilesToWrite.map(bundledFileToWrite => mkDirpAsync(dirname(bundledFileToWrite.path))
+    .then(() => writeFileAsync(bundledFileToWrite.path, bundledFileToWrite.content)));
   return Promise.all(promises);
 }
 
