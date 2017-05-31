@@ -8,7 +8,7 @@ import { fillConfigDefaults, getUserConfigFile, replacePathVars } from './util/c
 import * as Constants from './util/constants';
 import { BuildError, IgnorableError } from './util/errors';
 import { emit, EventType } from './util/events';
-import { getBooleanPropertyValue, printDependencyMap, webpackStatsToDependencyMap, writeFileAsync } from './util/helpers';
+import { getBooleanPropertyValue, printDependencyMap, webpackStatsToDependencyMap, writeFileAsync, mkDirpAsync } from './util/helpers';
 import { BuildContext, BuildState, ChangedFile, TaskInfo } from './util/interfaces';
 
 
@@ -116,7 +116,8 @@ export function writeBundleFilesToDisk(context: BuildContext) {
     return dirname(file.path).indexOf(context.buildDir) >= 0;
   });
   context.bundledFilePaths = bundledFilesToWrite.map(bundledFile => bundledFile.path);
-  const promises = bundledFilesToWrite.map(bundledFileToWrite => writeFileAsync(bundledFileToWrite.path, bundledFileToWrite.content));
+  const promises = bundledFilesToWrite.map(bundledFileToWrite => mkDirpAsync(dirname(bundledFileToWrite.path)) 
+    && writeFileAsync(bundledFileToWrite.path, bundledFileToWrite.content));
   return Promise.all(promises);
 }
 
